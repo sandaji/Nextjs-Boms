@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Users {
+  userId String @id @default(uuid()) 
+  name   String @unique
+  email  String
+}
+
+model Products {
+  productId     String      @id @default(uuid()) 
+  name          String @unique
+  price         Float
+  rating        Float?
+  stockQuantity Int
+  Sales         Sales[]
+  Purchases     Purchases[]
+  imageUrl      String?
+}
+
+model Sales {
+  saleId      String   @id @default(uuid())
+  productId   String
+  timestamp   DateTime
+  quantity    Int
+  unitPrice   Float
+  totalAmount Float
+  product     Products @relation(fields: [productId], references: [productId])
+}
+
+model Purchases {
+  purchaseId String   @id @default(uuid())
+  productId  String
+  timestamp  DateTime
+  quantity   Int
+  unitCost   Float
+  totalCost  Float
+  product    Products @relation(fields: [productId], references: [productId])
+}
+
+model Expenses {
+  expenseId String   @id  @default(uuid())
+  category  String
+  amount    Float
+  timestamp DateTime
+}
+
+model SalesSummary {
+  salesSummaryId   String   @id @default(uuid())
+  totalValue       Float
+  changePercentage Float?
+  date             DateTime
+}
+
+model PurchaseSummary {
+  purchaseSummaryId String   @id @default(uuid())
+  totalPurchased    Float
+  changePercentage  Float?
+  date              DateTime
+}
+
+model ExpenseSummary {
+  expenseSummaryId  String              @id @default(uuid())
+  totalExpenses     Float
+  date              DateTime
+  ExpenseByCategory ExpenseByCategory[]
+}
+
+model ExpenseByCategory {
+  expenseByCategoryId String         @id @default(uuid())
+  expenseSummaryId    String
+  category            String
+  amount              BigInt
+  date                DateTime
+  expenseSummary      ExpenseSummary @relation(fields: [expenseSummaryId], references: [expenseSummaryId], onDelete: Cascade)
+}
+
+model Admin {
+  adminId  String @id @default(uuid())
+  userName String @unique
+  password String
+}
+

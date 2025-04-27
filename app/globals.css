@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Light mode colors */
+  --text-primary: #1a202c; /* text-gray-900 */
+  --text-secondary: #4a5568; /* text-gray-700 */
+  --text-accent: #5a67d8; /* text-indigo-600 */
+  --bg-primary: #ffffff; /* bg-white */
+  --bg-secondary: #f7fafc; /* bg-gray-100 */
+  --bg-accent: #ebf4ff; /* bg-indigo-50 */
+  --link: #3182ce; /* text-blue-600 */
+  --link-hover: #2c5282; /* text-blue-800 */
+  --link-focus: #90cdf4; /* focus:ring-blue-300 */
+  --table-hover: #edf2f7; /* hover:bg-gray-200 */
+}
+
+.dark {
+  /* Dark mode colors */
+  --text-primary: #f7fafc; /* text-gray-100 */
+  --text-secondary: #a0aec0; /* text-gray-400 */
+  --text-accent: #7f9cf5; /* text-indigo-400 */
+  --bg-primary: #1a202c; /* bg-gray-900 */
+  --bg-secondary: #2d3748; /* bg-gray-800 */
+  --bg-accent: #3c366b; /* bg-indigo-900 */
+  --link: #63b3ed; /* text-blue-400 */
+  --link-hover: #4299e1; /* text-blue-500 */
+  --link-focus: #2b6cb0; /* focus:ring-blue-700 */
+  --table-hover: #4a5568; /* hover:bg-gray-700 */
+}
+
+/* Base styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root,
+.app {
+  height: 100%;
+  width: 100%;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  transition: color 300ms, background-color 300ms;
+}
+
+/* Link styles */
+a {
+  color: var(--link);
+  transition: color 300ms;
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+a:focus {
+  outline: 2px solid var(--link-focus);
+  outline-offset: 2px;
+}
+
+/* Table styles */
+tr:hover {
+  background-color: var(--table-hover);
+}
+
+/* Custom grid rows for responsive layouts */
+@media (min-width: 768px) {
+  .custom-grid-rows {
+    grid-template-rows: repeat(8, 20vh);
+  }
+}
+
+@media (min-width: 1280px) {
+  .custom-grid-rows {
+    grid-template-rows: repeat(8, 7.5vh);
+  }
+}
+
+/* toast notification */
+@keyframes progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-fade-out {
+  animation: fade-out 0.3s ease-in forwards;
+}
