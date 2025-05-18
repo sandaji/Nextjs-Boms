@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextApiRequest, NextApiResponse } from "next";
 import cloudinary from "../config/cloudinary";
 
 export const uploadImage = async (
-  req: Request,
-  res: Response
+  req: NextApiRequest,
+  res: NextApiResponse
 ): Promise<void> => {
   try {
     if (!req.file) {

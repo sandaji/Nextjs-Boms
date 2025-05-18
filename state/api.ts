@@ -58,9 +58,21 @@ export interface User {
   email: string;
 }
 
+export interface NewUser {
+  name: string;
+  email: string;
+}
+
 export interface UploadImageResponse {
   success: boolean;
   imageUrl: string;
+}
+
+export interface ExpensesResponse {
+  expenses: ExpenseByCategorySummary[];
+  total: number;
+  page: number;
+  totalPages: number;
 }
 
 export const api = createApi({
@@ -98,7 +110,15 @@ export const api = createApi({
       query: () => "/users",
       providesTags: ["Users"],
     }),
-    getExpensesByCategory: build.query<ExpenseByCategorySummary[], void>({
+    createUser: build.mutation<User, NewUser>({
+      query: (newUser) => ({
+        url: "/users",
+        method: "POST",
+        body: newUser,
+      }),
+      invalidatesTags: ["Users"],
+    }),
+    getExpensesByCategory: build.query<ExpensesResponse, void>({
       query: () => "/expenses",
       providesTags: ["Expenses"],
     }),
@@ -109,6 +129,7 @@ export const {
   useGetDashboardMetricsQuery,
   useGetProductsQuery,
   useCreateProductMutation,
+  useCreateUserMutation,
   useUploadImageMutation,
   useGetUsersQuery,
   useGetExpensesByCategoryQuery,

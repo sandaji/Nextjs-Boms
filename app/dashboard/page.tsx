@@ -12,7 +12,6 @@ import CardPopularProducts from "./CardPopularProducts";
 import CardPurchaseSummary from "./CardPurchaseSummary";
 import CardSalesSummary from "./CardSalesSummary";
 import StatCard from "./StatCard";
-import Header from "@/(components)/Header";
 
 const Dashboard = () => {
   return (

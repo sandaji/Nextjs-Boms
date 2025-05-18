@@ -18,7 +18,7 @@ const CardPopularProducts = () => {
 
   if (!dashboardMetrics || !dashboardMetrics.popularProducts) {
     return (
-      <div className="text-center py-4 text-slate-600 dark:text-slate-400">
+      <div className="text-center py-4 text-red-500 dark:text-red-500">
         <p>Failed to load popular products.</p>
       </div>
     );

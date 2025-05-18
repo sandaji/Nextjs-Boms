@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
 import { prisma } from "../utils/prisma";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export const getExpensesByCategory = async (req: Request, res: Response) => {
+export const getExpensesByCategory = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const expenses = await prisma.expenseByCategory.findMany({
       orderBy: {

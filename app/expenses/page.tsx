@@ -33,15 +33,27 @@ const Expenses = () => {
   const [endDate, setEndDate] = useState("");
 
   const {
-    data: expensesData,
+    data: expensesResponse,
     isLoading,
     isError,
   } = useGetExpensesByCategoryQuery();
-  const expenses = useMemo(() => expensesData ?? [], [expensesData]);
+  const expenses = useMemo(
+    () => expensesResponse?.expenses ?? [],
+    [expensesResponse]
+  );
 
   const parseDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toISOString().split("T")[0];
+    try {
+      // The date might be in ISO format or another format
+      const date = new Date(dateString);
+      if (date.toString() === "Invalid Date") {
+        return dateString;
+      }
+      return date.toISOString().split("T")[0];
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      return dateString; // Return original string if parsing fails
+    }
   };
 
   const aggregatedData: AggregatedDataItem[] = useMemo(() => {
@@ -51,7 +63,9 @@ const Expenses = () => {
           selectedCategory === "All" || data.category === selectedCategory;
         const dataDate = parseDate(data.date);
         const matchesDate =
-          !startDate || !endDate || (dataDate >= startDate && dataDate <= endDate);
+          !startDate ||
+          !endDate ||
+          (dataDate >= startDate && dataDate <= endDate);
         return matchesCategory && matchesDate;
       })
       .reduce((acc: AggregatedData, data: ExpenseByCategorySummary) => {
@@ -66,11 +80,10 @@ const Expenses = () => {
         acc[data.category].amount += amount;
         return acc;
       }, {});
-  
+
     return Object.values(filtered);
   }, [expenses, selectedCategory, startDate, endDate]);
 
-  
   const classNames = {
     container: "bg-gray-100 dark:bg-gray-900",
     label: "block text-sm font-medium text-gray-700 dark:text-gray-300",
@@ -106,7 +119,7 @@ const Expenses = () => {
     );
   }
 
-  if (isError || !expensesData) {
+  if (isError || !expensesResponse) {
     return (
       <div className="w-full p-3 mt-4 bg-slate-200 dark:bg-gray-900 rounded-lg border border-red-200 dark:border-red-800 flex items-center">
         <div
@@ -224,17 +237,16 @@ const Expenses = () => {
               </Pie>
 
               <Tooltip
-  contentStyle={{
-    backgroundColor: "#f8fafc",
-    borderColor: "#cbd5e1",
-    borderRadius: "0.5rem",
-    color: "#0f172a",
-    fontSize: "0.875rem",
-  }}
-  labelStyle={{ color: "#64748b" }}
-  itemStyle={{ color: "#334155" }}
-/>
-
+                contentStyle={{
+                  backgroundColor: "#f8fafc",
+                  borderColor: "#cbd5e1",
+                  borderRadius: "0.5rem",
+                  color: "#0f172a",
+                  fontSize: "0.875rem",
+                }}
+                labelStyle={{ color: "#64748b" }}
+                itemStyle={{ color: "#334155" }}
+              />
 
               <Legend
                 formatter={(value) => (

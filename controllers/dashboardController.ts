@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from "../utils/prisma";
 
 export const getDashboardMetrics = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+  req: NextApiRequest,
+  res: NextApiResponse
+) => {
   try {
     const popularProducts = await prisma.products.findMany({
       take: 15,

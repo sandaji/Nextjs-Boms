@@ -61,12 +61,16 @@ const CardSalesSummary = () => {
             {/* Top section */}
             <div className="flex justify-between items-center mb-4 px-7 mt-5">
               <div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Value</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">
+                  Value
+                </p>
                 <div className="text-2xl font-bold flex items-center">
                   <span>
-                    Ksh {(totalValueSum / 1_000_000).toLocaleString("en", {
+                    Ksh{" "}
+                    {(totalValueSum / 1_000_000).toLocaleString("en", {
                       maximumFractionDigits: 2,
-                    })}m
+                    })}
+                    m
                   </span>
                   <span className="text-green-500 text-sm ml-3 flex items-center">
                     <TrendingUp className="w-4 h-4 mr-1" />
@@ -88,51 +92,73 @@ const CardSalesSummary = () => {
 
             {/* Chart section */}
             <div className="flex-1 px-7 pb-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={salesData}
-                  margin={{ top: 0, right: 0, left: -10, bottom: 9 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#cbd5e1" />
-                  <XAxis
-                    dataKey="date"
-                    tickFormatter={(value) => {
-                      const date = new Date(value);
-                      return `${date.getMonth() + 1}/${date.getDate()}`;
-                    }}
-                    tick={{ fill: "currentColor", fontSize: 12 }}
-                    axisLine={{ stroke: "#d1d5db" }}
-                  />
-                  <YAxis
-                    tickFormatter={(value) => `ksh ${(value / 1_000_000).toFixed(0)}m`}
-                    tick={{ fontSize: 12, fill: "currentColor", dx: -1 }}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#fff",
-                      borderColor: "#e5e7eb",
-                      borderRadius: "0.5rem",
-                      fontSize: "0.875rem",
-                    }}
-                    formatter={(value: number) => [`ksh ${(value / 1_000_000).toFixed(2)}m`]}
-                    labelFormatter={(label) =>
-                      new Date(label).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
-                    }
-                  />
-                  <Bar
-                    dataKey="totalValue"
-                    fill="#6366f1"
-                    barSize={10}
-                    radius={[10, 10, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+              {salesData.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center text-slate-500 dark:text-slate-400">
+                  No sales data available.
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={salesData}
+                    margin={{ top: 0, right: 0, left: -10, bottom: 9 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#cbd5e1"
+                    />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={(value) => {
+                        const date = new Date(value);
+                        if (isNaN(date.getTime())) return "";
+                        return new Intl.DateTimeFormat("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        }).format(date);
+                      }}
+                      minTickGap={10}
+                      tick={{ fill: "currentColor", fontSize: 12 }}
+                      axisLine={{ stroke: "#d1d5db" }}
+                    />
+                    <YAxis
+                      tickFormatter={(value) =>
+                        `ksh ${(value / 1_000_000).toFixed(0)}m`
+                      }
+                      tick={{ fontSize: 12, fill: "currentColor", dx: -1 }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#fff",
+                        borderColor: "#e5e7eb",
+                        borderRadius: "0.5rem",
+                        fontSize: "0.875rem",
+                      }}
+                      formatter={(value: number) => [
+                        `ksh ${(value / 1_000_000).toFixed(2)}m`,
+                      ]}
+                      labelFormatter={(label) => {
+                        const date = new Date(label);
+                        return isNaN(date.getTime())
+                          ? "Invalid date"
+                          : date.toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            });
+                      }}
+                    />
+                    <Bar
+                      dataKey="totalValue"
+                      fill="#6366f1"
+                      barSize={10}
+                      radius={[10, 10, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </div>
 

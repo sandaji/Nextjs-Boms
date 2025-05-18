@@ -2,7 +2,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { ThemeProvider } from "next-themes";
 import { ToastProvider } from "./context/ToastContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardWrapper from "./dashboardWrapper"; // Contains Redux Provider

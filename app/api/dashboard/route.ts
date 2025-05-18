@@ -1,7 +1,26 @@
-import { NextResponse } from "next/server";
-import { prisma } from "../../../utils/prisma";
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/utils/prisma";
 
-export async function GET() {
+// Helper function to safely serialize BigInt values and format dates
+const serializeData = (data: any): any => {
+  if (Array.isArray(data)) {
+    return data.map(serializeData);
+  }
+  if (typeof data === "object" && data !== null) {
+    if (data instanceof Date) {
+      return data.toISOString();
+    }
+    return Object.fromEntries(
+      Object.entries(data).map(([key, value]) => [key, serializeData(value)])
+    );
+  }
+  if (typeof data === "bigint") {
+    return data.toString();
+  }
+  return data;
+};
+
+export async function GET(req: NextRequest) {
   try {
     const popularProducts = await prisma.products.findMany({
       take: 15,
@@ -31,30 +50,21 @@ export async function GET() {
       },
     });
 
-    const expenseByCategorySummaryRaw = await prisma.expenseByCategory.findMany(
-      {
-        take: 5,
-        orderBy: {
-          date: "desc",
-        },
-      }
-    );
-
-    // Convert BigInt to string for JSON serialization
-    const expenseByCategorySummary = expenseByCategorySummaryRaw.map(
-      (expense) => ({
-        ...expense,
-        amount: expense.amount.toString(),
-      })
-    );
-
-    return NextResponse.json({
+    const expenseByCategorySummary = await prisma.expenseByCategory.findMany({
+      take: 5,
+      orderBy: {
+        date: "desc",
+      },
+    }); // Serialize all data to handle BigInt values and dates
+    const serializedData = serializeData({
       popularProducts,
       salesSummary,
       purchaseSummary,
       expenseSummary,
       expenseByCategorySummary,
     });
+
+    return NextResponse.json(serializedData);
   } catch (error) {
     console.error("Error fetching dashboard metrics:", error);
     return NextResponse.json(

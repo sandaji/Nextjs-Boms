@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/app/context/AuthContext";
 import {
   Archive,
   CircleDollarSign,
@@ -79,6 +80,8 @@ const Sidebar = ({
   isSidebarCollapsed: boolean;
   setIsSidebarCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+ const {isAuthenticated, user } = useAuth();
+
   const navigationLinks = [
     { href: "/", icon: Layout, label: "Dashboard" },
     { href: "/inventory", icon: Archive, label: "Inventory" },
@@ -142,7 +145,7 @@ const Sidebar = ({
 
       {/* FOOTER */}
       <footer
-        className={`
+        className={` flex items-center justify-between
           text-xs text-slate-500 dark:text-slate-400
           border-t border-slate-300 dark:border-slate-700
           py-4 transition-all duration-300
@@ -150,6 +153,24 @@ const Sidebar = ({
         `}
       >
         &copy; {currentYear} BOMS
+
+           {isAuthenticated && user && (
+                    <div className="hidden md:flex items-center gap-2">
+                      {/* <Image
+                        src="/assets/profile.jpg"
+                        alt="Profile"
+                        width={40}
+                        height={40}
+                        className="rounded-full object-cover ring-2 ring-slate-400 dark:ring-slate-600"
+                        onError={(e) => {
+                          e.currentTarget.src = "/assets/default-profile.jpg";
+                        }}
+                      /> */}
+                      <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                        user: {user.userName}
+                      </span>
+                    </div>
+                  )}
       </footer>
     </aside>
   );

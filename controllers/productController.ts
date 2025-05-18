@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../utils/prisma";
 
 export const createProduct = async (
-  req: Request,
-  res: Response
+  req: NextApiRequest,
+  res: NextApiResponse
 ): Promise<void> => {
   try {
     const { name, price, rating, stockQuantity, imageUrl } = req.body;

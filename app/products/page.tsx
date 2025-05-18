@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useCreateProductMutation, useGetProductsQuery } from "../../state/api";
 import Header from "../(components)/Header";
 import Rating from "../(components)/Rating";
+import Loading from "../(components)/Loading";
 
 type ProductFormData = {
   name: string;
@@ -33,7 +34,7 @@ const Products = () => {
   if (isLoading) {
     return (
       <div className="py-4 text-center text-slate-500 dark:text-slate-300">
-        Loading...
+        <Loading />
       </div>
     );
   }
